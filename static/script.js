@@ -7,9 +7,12 @@ const titulo = document.querySelector('#titulo');
 
 let NOMBRE = 'CenigrafBot';
 
+let enviando = false;
+
+
 function addMessage(who, text) {
   const p = document.createElement('p');
-  p.className = 'message';
+  p.className = `message ${who === 'Tú' ? 'user' : 'bot'}`;
   p.textContent = `${who}: ${text}`;
   chat.appendChild(p);
   chat.scrollTop = chat.scrollHeight;
@@ -20,8 +23,21 @@ function mostrarAviso(texto) {
   input.classList.toggle('invalido', Boolean(texto));
 }
 
+
+function setEnviando(estado) {
+  enviando = estado;
+  document
+    .querySelectorAll('#sugerencias button, #form button')
+    .forEach((boton) => { boton.disabled = estado; });
+}
+
 async function enviar(message) {
+  
+  if (enviando) return;
+
+  setEnviando(true);
   addMessage('Tú', message);
+
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -34,6 +50,9 @@ async function enviar(message) {
     addMessage(NOMBRE, data.reply);
   } catch (error) {
     addMessage(NOMBRE, `Error: ${error.message}`);
+  } finally {
+    
+    setEnviando(false);
   }
 }
 
@@ -70,6 +89,10 @@ input.addEventListener('input', () => mostrarAviso(''));
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
+
+
+  if (enviando) return;
+
   const message = input.value.trim();
   if (!message) {
     mostrarAviso('⚠️ Escribe un mensaje antes de enviar.');
