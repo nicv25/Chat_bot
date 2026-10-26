@@ -4,8 +4,13 @@ const input = document.querySelector('#message');
 const aviso = document.querySelector('#aviso');
 const sugerencias = document.querySelector('#sugerencias');
 const titulo = document.querySelector('#titulo');
+const botonLimpiar = document.querySelector('#limpiar');
 
 let NOMBRE = 'CenigrafBot';
+
+
+let BIENVENIDA = '';
+
 let enviando = false;
 
 function addMessage(who, text) {
@@ -25,7 +30,6 @@ function mostrarIndicador() {
   chat.scrollTop = chat.scrollHeight;
 }
 
-
 function ocultarIndicador() {
   const indicador = document.querySelector('#indicador');
   if (indicador) indicador.remove();
@@ -38,9 +42,24 @@ function mostrarAviso(texto) {
 
 function setEnviando(estado) {
   enviando = estado;
+
+  // CAMBIO 5: el botón "Limpiar chat" también se bloquea durante la consulta
   document
-    .querySelectorAll('#sugerencias button, #form button')
+    .querySelectorAll('#sugerencias button, #form button, #limpiar')
     .forEach((boton) => { boton.disabled = estado; });
+}
+
+
+function limpiarChat() {
+  if (enviando) return;
+
+
+  if (!confirm('¿Seguro que quieres borrar la conversación?')) return;
+
+  chat.replaceChildren();
+  mostrarAviso('');
+
+  if (BIENVENIDA) addMessage(NOMBRE, BIENVENIDA);
 }
 
 async function enviar(message) {
@@ -48,8 +67,6 @@ async function enviar(message) {
 
   setEnviando(true);
   addMessage('Tú', message);
-
-
   mostrarIndicador();
 
   try {
@@ -93,9 +110,10 @@ async function iniciar() {
     const config = await response.json();
 
     NOMBRE = config.nombre;
+    BIENVENIDA = config.bienvenida;
     document.title = NOMBRE;
     titulo.textContent = NOMBRE;
-    addMessage(NOMBRE, config.bienvenida);
+    addMessage(NOMBRE, BIENVENIDA);
     crearSugerencias(config.preguntas);
   } catch {
     addMessage(NOMBRE, 'No se pudo cargar la configuración del chat.');
@@ -103,6 +121,9 @@ async function iniciar() {
 }
 
 input.addEventListener('input', () => mostrarAviso(''));
+
+
+botonLimpiar.addEventListener('click', limpiarChat);
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
