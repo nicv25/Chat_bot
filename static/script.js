@@ -6,9 +6,7 @@ const sugerencias = document.querySelector('#sugerencias');
 const titulo = document.querySelector('#titulo');
 
 let NOMBRE = 'CenigrafBot';
-
 let enviando = false;
-
 
 function addMessage(who, text) {
   const p = document.createElement('p');
@@ -18,11 +16,25 @@ function addMessage(who, text) {
   chat.scrollTop = chat.scrollHeight;
 }
 
+function mostrarIndicador() {
+  const p = document.createElement('p');
+  p.id = 'indicador';
+  p.className = 'message bot escribiendo';
+  p.textContent = 'El chatbot está escribiendo…';
+  chat.appendChild(p);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+
+function ocultarIndicador() {
+  const indicador = document.querySelector('#indicador');
+  if (indicador) indicador.remove();
+}
+
 function mostrarAviso(texto) {
   aviso.textContent = texto;
   input.classList.toggle('invalido', Boolean(texto));
 }
-
 
 function setEnviando(estado) {
   enviando = estado;
@@ -32,11 +44,13 @@ function setEnviando(estado) {
 }
 
 async function enviar(message) {
-  
   if (enviando) return;
 
   setEnviando(true);
   addMessage('Tú', message);
+
+
+  mostrarIndicador();
 
   try {
     const response = await fetch('/api/chat', {
@@ -47,11 +61,14 @@ async function enviar(message) {
     if (response.status === 422) throw new Error('El mensaje no es válido.');
     if (!response.ok) throw new Error('No se pudo obtener una respuesta.');
     const data = await response.json();
+
+    ocultarIndicador();
     addMessage(NOMBRE, data.reply);
   } catch (error) {
+    ocultarIndicador();
     addMessage(NOMBRE, `Error: ${error.message}`);
   } finally {
-    
+    ocultarIndicador();
     setEnviando(false);
   }
 }
@@ -89,8 +106,6 @@ input.addEventListener('input', () => mostrarAviso(''));
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-
-
   if (enviando) return;
 
   const message = input.value.trim();
