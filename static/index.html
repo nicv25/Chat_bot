@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CenigrafBot</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1 id="titulo">CenigrafBot</h1>
+
+  <div id="chat" aria-live="polite"></div>
+  <div id="sugerencias"></div>
+  <p id="aviso" role="alert"></p>
+
+  <form id="form" novalidate>
+    <input id="message" autocomplete="off" placeholder="Escribe tu mensaje…" maxlength="2000">
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
