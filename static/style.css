@@ -1,9 +1,17 @@
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   font: 16px system-ui, sans-serif;
-  max-width: 680px;
-  margin: 3rem auto;
-  padding: 0 1rem;
   color: #202124;
+  margin: 0;
+  padding: .75rem;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
@@ -11,38 +19,33 @@ header {
   justify-content: space-between;
   align-items: center;
   gap: .5rem;
-  margin-bottom: 1rem;
+  margin-bottom: .75rem;
 }
 
 header h1 {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 1.25rem;
 }
 
-#limpiar {
-  background: #fff;
-  color: #b3261e;
-  border: 1px solid #b3261e;
-  font-size: .85rem;
-  padding: .5rem .8rem;
-}
 
 #chat {
-  min-height: 260px;
-  max-height: 400px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   border: 1px solid #ddd;
   border-radius: 12px;
-  padding: 1rem;
+  padding: .75rem;
   margin-bottom: .5rem;
 }
+
 
 .message {
   margin: .6rem 0;
   padding: .6rem .8rem;
-  max-width: 85%;
+  max-width: 90%;
   border-radius: 12px;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .message.user {
@@ -66,19 +69,14 @@ header h1 {
   50% { opacity: .4; }
 }
 
+
 #sugerencias {
   display: flex;
   flex-wrap: wrap;
   gap: .4rem;
   margin-bottom: .5rem;
-}
-
-#sugerencias button {
-  background: #fff;
-  color: #2e7d00;
-  border: 1px solid #39a900;
-  font-size: .85rem;
-  padding: .4rem .7rem;
+  max-height: 30dvh;
+  overflow-y: auto;
 }
 
 #aviso {
@@ -93,19 +91,11 @@ form {
   gap: .5rem;
 }
 
-input {
-  flex: 1;
-  padding: .8rem;
-  border: 1px solid #aaa;
-  border-radius: 8px;
-}
-
-input.invalido {
-  border-color: #b3261e;
-}
 
 button {
-  padding: .8rem 1rem;
+  font: inherit;
+  min-height: 44px;
+  padding: .6rem 1rem;
   border: 0;
   border-radius: 8px;
   background: #39a900;
@@ -116,4 +106,91 @@ button {
 button:disabled {
   opacity: .5;
   cursor: not-allowed;
+}
+
+#sugerencias button {
+  background: #fff;
+  color: #2e7d00;
+  border: 1px solid #39a900;
+  font-size: .9rem;
+}
+
+#limpiar {
+  background: #fff;
+  color: #b3261e;
+  border: 1px solid #b3261e;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+
+input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  font: inherit;
+  font-size: 16px;
+  padding: .6rem .8rem;
+  border: 1px solid #aaa;
+  border-radius: 8px;
+}
+
+input.invalido {
+  border-color: #b3261e;
+}
+
+
+@media (min-width: 480px) {
+  body {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+  }
+
+  .message {
+    max-width: 85%;
+  }
+}
+
+
+@media (min-width: 768px) {
+  body {
+    max-width: 680px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+    height: auto;
+  }
+
+  #chat {
+    flex: none;
+    min-height: 260px;
+    max-height: 400px;
+    padding: 1rem;
+  }
+
+  #sugerencias {
+    max-height: none;
+  }
+}
+
+@media (max-height: 500px) {
+  body {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  #chat {
+    flex: none;
+    min-height: 180px;
+    max-height: 60dvh;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .message.escribiendo {
+    animation: none;
+  }
 }

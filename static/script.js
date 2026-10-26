@@ -43,7 +43,6 @@ function mostrarAviso(texto) {
 function setEnviando(estado) {
   enviando = estado;
 
-  // CAMBIO 5: el botón "Limpiar chat" también se bloquea durante la consulta
   document
     .querySelectorAll('#sugerencias button, #form button, #limpiar')
     .forEach((boton) => { boton.disabled = estado; });
