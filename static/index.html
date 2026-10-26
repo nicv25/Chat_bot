@@ -7,19 +7,46 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <header>
-    <h1 id="titulo">CenigrafBot</h1>
-    <button id="limpiar" type="button">Limpiar chat</button>
-  </header>
+  <main class="app">
 
-  <div id="chat" aria-live="polite"></div>
-  <div id="sugerencias"></div>
-  <p id="aviso" role="alert"></p>
+    <!-- Encabezado: logo, nombre del bot y botón de limpiar -->
+    <header class="encabezado">
+      <img id="logo" class="logo" src="/static/img/logo-sena.png"
+           alt="Logo del SENA" onerror="this.hidden = true">
 
-  <form id="form" novalidate>
-    <input id="message" autocomplete="off" placeholder="Escribe tu mensaje…" maxlength="2000">
-    <button type="submit">Enviar</button>
-  </form>
+      <div class="identidad">
+        <h1 id="titulo">CenigrafBot</h1>
+        <p class="subtitulo"><span class="punto"></span>Asistente virtual · CENIGRAF</p>
+      </div>
+
+      <button id="limpiar" type="button">
+        <span aria-hidden="true">🗑️</span> Limpiar chat
+      </button>
+    </header>
+
+    <!-- Conversación -->
+    <div id="chat" aria-live="polite"></div>
+
+    <!-- Preguntas frecuentes, aviso y escritura -->
+    <section class="panel">
+      <p class="etiqueta">Preguntas frecuentes</p>
+      <div id="sugerencias"></div>
+      <p id="aviso" role="alert"></p>
+
+      <form id="form" novalidate>
+        <input id="message" autocomplete="off" placeholder="Escribe tu mensaje…" maxlength="2000">
+        <button type="submit">
+          Enviar
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M2 21 23 12 2 3v7l15 2-15 2z"/>
+          </svg>
+        </button>
+      </form>
+
+      <p class="nota">CenigrafBot puede equivocarse. Verifica la información en los canales oficiales del SENA.</p>
+    </section>
+
+  </main>
 
   <script src="/static/script.js"></script>
 </body>

@@ -7,26 +7,81 @@ const titulo = document.querySelector('#titulo');
 const botonLimpiar = document.querySelector('#limpiar');
 
 let NOMBRE = 'CenigrafBot';
-
-
 let BIENVENIDA = '';
-
 let enviando = false;
 
+// CAMBIO 1: un ícono decorativo para cada pregunta frecuente
+const ICONOS = ['📚', '⏱️', '📝', '✅', '📍'];
+
+// CAMBIO 2: hora de cada mensaje
+function horaActual() {
+  return new Date().toLocaleTimeString('es-CO', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+// CAMBIO 3: avatar circular del bot
+function crearAvatar() {
+  const avatar = document.createElement('span');
+  avatar.className = 'avatar';
+  avatar.setAttribute('aria-hidden', 'true');
+  avatar.textContent = 'CB';
+  return avatar;
+}
+
+// CAMBIO 4: cada mensaje es una fila con avatar, burbuja y hora
 function addMessage(who, text) {
-  const p = document.createElement('p');
-  p.className = `message ${who === 'Tú' ? 'user' : 'bot'}`;
-  p.textContent = `${who}: ${text}`;
-  chat.appendChild(p);
+  const esUsuario = who === 'Tú';
+
+  const fila = document.createElement('div');
+  fila.className = `fila ${esUsuario ? 'user' : 'bot'}`;
+
+  const burbuja = document.createElement('div');
+  burbuja.className = 'burbuja';
+
+  // Texto oculto visualmente, para lectores de pantalla
+  const autor = document.createElement('span');
+  autor.className = 'sr-only';
+  autor.textContent = `${who}: `;
+
+  const contenido = document.createElement('span');
+  contenido.textContent = text;
+
+  const hora = document.createElement('span');
+  hora.className = 'hora';
+  hora.textContent = horaActual();
+
+  burbuja.append(autor, contenido, hora);
+
+  if (!esUsuario) fila.append(crearAvatar());
+  fila.append(burbuja);
+
+  chat.appendChild(fila);
   chat.scrollTop = chat.scrollHeight;
 }
 
+// CAMBIO 5: indicador con avatar y tres puntos animados
 function mostrarIndicador() {
-  const p = document.createElement('p');
-  p.id = 'indicador';
-  p.className = 'message bot escribiendo';
-  p.textContent = 'El chatbot está escribiendo…';
-  chat.appendChild(p);
+  const fila = document.createElement('div');
+  fila.id = 'indicador';
+  fila.className = 'fila bot escribiendo';
+
+  const burbuja = document.createElement('div');
+  burbuja.className = 'burbuja';
+
+  const puntos = document.createElement('span');
+  puntos.className = 'puntos';
+  puntos.setAttribute('aria-hidden', 'true');
+  puntos.innerHTML = '<span></span><span></span><span></span>';
+
+  const texto = document.createElement('span');
+  texto.textContent = 'El chatbot está escribiendo…';
+
+  burbuja.append(puntos, texto);
+  fila.append(crearAvatar(), burbuja);
+
+  chat.appendChild(fila);
   chat.scrollTop = chat.scrollHeight;
 }
 
@@ -42,17 +97,13 @@ function mostrarAviso(texto) {
 
 function setEnviando(estado) {
   enviando = estado;
-
   document
     .querySelectorAll('#sugerencias button, #form button, #limpiar')
     .forEach((boton) => { boton.disabled = estado; });
 }
 
-
 function limpiarChat() {
   if (enviando) return;
-
-
   if (!confirm('¿Seguro que quieres borrar la conversación?')) return;
 
   chat.replaceChildren();
@@ -89,11 +140,17 @@ async function enviar(message) {
   }
 }
 
+// CAMBIO 6: las preguntas frecuentes ahora llevan ícono
 function crearSugerencias(preguntas) {
-  preguntas.forEach((pregunta) => {
+  preguntas.forEach((pregunta, indice) => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.textContent = pregunta;
+
+    const icono = document.createElement('span');
+    icono.setAttribute('aria-hidden', 'true');
+    icono.textContent = ICONOS[indice] || '💬';
+
+    b.append(icono, document.createTextNode(pregunta));
     b.addEventListener('click', () => {
       mostrarAviso('');
       enviar(pregunta);
@@ -120,8 +177,6 @@ async function iniciar() {
 }
 
 input.addEventListener('input', () => mostrarAviso(''));
-
-
 botonLimpiar.addEventListener('click', limpiarChat);
 
 form.addEventListener('submit', (event) => {
@@ -139,4 +194,4 @@ form.addEventListener('submit', (event) => {
   enviar(message);
 });
 
-iniciar();
+iniciar();  
